@@ -14,6 +14,11 @@
    height: 1.5rem;
    cursor: pointer;
 }
+.navIcons>a>img{
+    width: 1.5rem;
+    height: 1.5rem;
+    cursor: pointer;
+ }
 .navIcons>svg{
     width: 1.5rem;
     height: 1.5rem;
