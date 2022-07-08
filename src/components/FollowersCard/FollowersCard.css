@@ -30,9 +30,22 @@
 .name>span:nth-of-type(1){
     font-weight: bold;
 }
+.name>span:nth-of-type(2){
+    font-size: 12px;
+}
 
-.fc-button{
+/* .fc-button{
     height: 2rem;
     padding-left: 20px;
     padding-right: 20px;
+} */
+.fc-button {
+    height: 1.6rem;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.UnfollowButton{
+    background: transparent;
+    cursor: pointer;
+    color: var(--orange);
 }
