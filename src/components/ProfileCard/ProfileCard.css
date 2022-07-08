@@ -35,7 +35,12 @@
 
 .ProfileName>span:nth-of-type(1){
     font-weight: 700;
+    text-transform: capitalize;
 }
+.ProfileName>span:nth-of-type(2){
+    text-transform: capitalize;
+}
+
 
 .followStatus{
     display: flex;
