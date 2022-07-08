@@ -4,6 +4,7 @@ import {useDispatch,useSelector} from 'react-redux';
 import {useParams} from 'react-router-dom';
 import {getTimelinePosts} from '../../actions/PostsAction'
 import Post from '../Post/Post';
+import Skeleton from '../skeleton/Skeleton';
 import './Posts.css';
 const Posts = () => {
   const params = useParams();
@@ -18,7 +19,9 @@ const Posts = () => {
   return (
     <div className='Posts'>
         {
-          loading?"Fetching post....":
+          loading?(
+            <Skeleton type="post" />
+          ):
           posts.map((post,id)=>{
             return <Post data={post} key={id} />;
           })
