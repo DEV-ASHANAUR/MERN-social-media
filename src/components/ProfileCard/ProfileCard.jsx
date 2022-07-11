@@ -1,53 +1,120 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
-import Cover from "../../img/cover.jpg";
-import Profile from "../../img/profileImg.jpg";
 import './ProfileCard.css';
+import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import * as UserApi from '../../api/UserRequests';
+
 const ProfileCard = ({ location }) => {
+    const params = useParams();
     const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER;
     const { user } = useSelector((state) => state.authReducer.authData);
     const posts = useSelector((state) => state.postReducer.posts)
+    const [profileUser, setProfileUser] = useState({});
+    //if page is in profile
+    const profileUserId = params.id;
+
+    useEffect(() => {
+        if (location === 'profilePage') {
+            const fetchProfileUser = async () => {
+
+                if (profileUserId === user._id) {
+                    setProfileUser(user);
+                } else {
+                    const profileUser = await UserApi.getUser(profileUserId);
+                    setProfileUser(profileUser.data);
+                }
+            }
+            fetchProfileUser();
+        }
+    }, [user]);
     return (
         <div className='ProfileCard'>
-            <div className="ProfileImages">
-                <img src={
-                    user.coverPicture
-                        ? serverPublic + user.coverPicture
-                        : serverPublic + "defaultCover.jpg"
-                } alt="cover" />
-                <img src={
-                    user.profilePicture
-                        ? serverPublic + user.profilePicture
-                        : serverPublic + "defaultProfile.png"
-                } alt="cover" />
-            </div>
+            {
+                (location === 'profilePage') ? (
+                    <div className="ProfileImages">
+                        <img src={
+                            profileUser.coverPicture
+                                ? serverPublic + profileUser.coverPicture
+                                : serverPublic + "defaultCover.jpg"
+                        } alt="cover" />
+                        <img src={
+                            profileUser.profilePicture
+                                ? serverPublic + profileUser.profilePicture
+                                : serverPublic + "defaultProfile.png"
+                        } alt="cover" />
+                    </div>
+                ) :
+                    (
+                        <div className="ProfileImages">
+                            <img src={
+                                user.coverPicture
+                                    ? serverPublic + user.coverPicture
+                                    : serverPublic + "defaultCover.jpg"
+                            } alt="cover" />
+                            <img src={
+                                user.profilePicture
+                                    ? serverPublic + user.profilePicture
+                                    : serverPublic + "defaultProfile.png"
+                            } alt="cover" />
+                        </div>
+                    )
+            }
+            {
+                (location === 'profilePage') ? (
+                    <div className="ProfileName">
+                        <span>{profileUser?.firstname} {profileUser?.lastname}</span>
+                        <span>{profileUser.about ? profileUser.about : 'Write about yourself'}</span>
+                    </div>
+                ) : (
+                    <div className="ProfileName">
+                        <span>{user.firstname} {user.lastname}</span>
+                        <span>{user.about ? user.about : 'Write about yourself'}</span>
+                    </div>
+                )
+            }
 
-            <div className="ProfileName">
-                <span>{user.firstname} {user.lastname}</span>
-                <span>{user.about ? user.about : 'Write about yourself'}</span>
-            </div>
 
             <div className="followStatus">
                 <hr />
                 <div>
+                    {
+                        (location === 'profilePage') ? (
+                            <div className="follow">
+                                <span>{profileUser.following?.length}</span>
+                                <span>Following</span>
+                            </div>
+                        ) : (
+                            <div className="follow">
+                                <span>{user.following.length}</span>
+                                <span>Following</span>
+                            </div>
+                        )
+                    }
 
-                    <div className="follow">
-                        <span>{user.following.length}</span>
-                        <span>Following</span>
-                    </div>
+
                     <div className="vl"></div>
-                    <div className="follow">
-                        <span>{user.followers.length}</span>
-                        <span>Followers</span>
-                    </div>
+                    {
+                        (location === 'profilePage') ? (
+                            <div className="follow">
+                                <span>{profileUser.followers?.length}</span>
+                                <span>Followers</span>
+                            </div>
+                        ) : (
+                            <div className="follow">
+                                <span>{user.followers.length}</span>
+                                <span>Followers</span>
+                            </div>
+                        )
+                    }
+
 
                     {(location === 'profilePage') && (
                         <>
                             <div className="vl"></div>
                             <div className="follow">
                                 <span>{
-                                    posts.filter((post) => post.userId === user._id).length
+                                    posts.filter((post) => post.userId === profileUser._id).length
                                 }</span>
                                 <span>Posts</span>
                             </div>

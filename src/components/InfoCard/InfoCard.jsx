@@ -27,7 +27,7 @@ const InfoCard = () => {
                 setProfileUser(user);
             } else {
                 const profileUser = await UserApi.getUser(profileUserId);
-                setProfileUser(profileUser);
+                setProfileUser(profileUser.data);
             }
         }
         fetchProfileUser();
@@ -52,21 +52,21 @@ const InfoCard = () => {
                 <span>
                     <b>Status </b>
                 </span>
-                <span>{profileUser.relationship}</span>
+                <span>{profileUser.relationship?profileUser.relationship:"Not Set Yet"}</span>
             </div>
 
             <div className="info">
                 <span>
                     <b>Lives in </b>
                 </span>
-                <span>{profileUser.livesin}</span>
+                <span>{profileUser.livesin?profileUser.livesin:"Not Set Yet"}</span>
             </div>
 
             <div className="info">
                 <span>
                     <b>Works at </b>
                 </span>
-                <span>{profileUser.worksAt}</span>
+                <span>{profileUser.worksAt? profileUser.worksAt:"Not Set Yet"}</span>
             </div>
 
             <button className='button logout-button' onClick={handleLogout}>Logout</button>

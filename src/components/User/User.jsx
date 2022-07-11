@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { followUser, unfollowUser } from '../../actions/UserAction';
 const User = ({ person }) => {
     const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER;
@@ -15,16 +16,20 @@ const User = ({ person }) => {
     return (
         <div className="follower">
             <div>
-                <img src={person.profilePicture
-                    ? serverPublic + person.profilePicture
-                    : serverPublic + "defaultProfile.png"} alt="" className='followerImage' />
-                <div className="name">
-                    <span>{person.firstname}</span>
-                    <span>{person.username}</span>
-                </div>
+                <Link to={`/profile/${person._id}`}>
+                    <img src={person.profilePicture
+                        ? serverPublic + person.profilePicture
+                        : serverPublic + "defaultProfile.png"} alt="" className='followerImage' />
+                </Link>
+                <Link to={`/profile/${person._id}`} style={{ textDecoration: "none", color: "inherit" }}>
+                    <div className="name">
+                        <span>{person.firstname}</span>
+                        <span>{person.username}</span>
+                    </div>
+                </Link>
             </div>
-            <div className={following?"button fc-button UnfollowButton":"button fc-button"} onClick={handleFollow}>
-                {following?"Unfollow":"Follow"}
+            <div className={following ? "button fc-button UnfollowButton" : "button fc-button"} onClick={handleFollow}>
+                {following ? "Unfollow" : "Follow"}
             </div>
         </div>
     )
