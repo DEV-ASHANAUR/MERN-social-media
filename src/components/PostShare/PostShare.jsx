@@ -8,6 +8,7 @@ import { UilSchedule } from "@iconscout/react-unicons";
 import { UilTimes } from "@iconscout/react-unicons";
 import { useDispatch, useSelector } from 'react-redux';
 import { uploadImage, uploadPost } from '../../actions/UploadAction';
+import {getTimelinePosts} from '../../actions/PostsAction'
 import { ToastContainer, toast } from 'react-toastify';
 
 const PostShare = () => {
@@ -52,6 +53,7 @@ const PostShare = () => {
       }
     }
     dispatch(uploadPost(newPost));
+    dispatch(getTimelinePosts(user._id));
     resetShare();
   }
   //reset form
