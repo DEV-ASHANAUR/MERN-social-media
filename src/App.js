@@ -4,6 +4,7 @@ import Home from "./pages/home/Home";
 import Profile from "./pages/Profile/Profile";
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import Chat from "./components/chat/Chat";
 function App() {
   const user = useSelector((state) => state.authReducer.authData);
   return (
@@ -19,11 +20,14 @@ function App() {
 
         <Route path="/profile/:id" element={user?<Profile/> : <Navigate to="../auth" />} />
 
+        <Route path="/chat" element={user?<Chat /> : <Navigate to="../auth" />} />
+
+
         <Route
           path="*"
           element={
             <main style={{ padding: "1rem" }}>
-              <p>There's nothing here!</p>
+              <p>404 || Page Not Found!</p>
             </main>
           }
         />

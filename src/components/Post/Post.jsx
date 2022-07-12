@@ -12,7 +12,7 @@ const Post = ({data}) => {
   const [liked, setLiked] = useState(data.likes?.includes(user._id));
   const [likes,setLikes] = useState(data.likes?.length);
 
-  console.log('for post',liked)
+  // console.log('for post',liked)
   // handleLike
   const handleLike = () =>{
     likePost(data._id,user._id);
