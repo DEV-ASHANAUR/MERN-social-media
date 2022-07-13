@@ -19,6 +19,7 @@
     "react-toastify": "^9.0.5",
     "redux": "^4.2.0",
     "redux-thunk": "^2.4.1",
+    "timeago.js": "^4.0.2",
     "web-vitals": "^2.1.0"
   },
   "scripts": {
