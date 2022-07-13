@@ -5,11 +5,12 @@ import { useEffect } from 'react';
 import { getUser } from '../../api/UserRequests';
 import { addMessages, getMessages } from '../../api/MessageRequests'
 import {format} from 'timeago.js';
-const ChatBox = ({ chat, currentUser }) => {
+const ChatBox = ({ chat, currentUser,setSendMessage,receivedMessage }) => {
     const [userData, setUserData] = useState(null);
     const [messages, setMessages] = useState(null);
     const [newMessage, setNewMessage] = useState("");
     const imageRef = useRef();
+    const scroll = useRef();
     //handleChange
     const handleChange = (newMessage) => {
         setNewMessage(newMessage)
@@ -26,7 +27,14 @@ const ChatBox = ({ chat, currentUser }) => {
             }
         }
         if (chat !== null) getUserData();
-    }, [chat, currentUser])
+    }, [chat, currentUser]);
+    
+    //receved the message from parent component
+    useEffect(()=>{
+        if(receivedMessage !== null && receivedMessage.chatId === chat._id){
+            setMessages([...messages,receivedMessage]);
+        }
+    },[receivedMessage])
 
     //fetch message for a user
     useEffect(() => {
@@ -52,7 +60,7 @@ const ChatBox = ({ chat, currentUser }) => {
         }
         const reciverId = chat.members.find((id)=>id!==currentUser);
         //set message to socket server
-
+        setSendMessage({...message, reciverId});
         //send message to database
         try {
             const {data} = await addMessages(message);
@@ -61,9 +69,11 @@ const ChatBox = ({ chat, currentUser }) => {
         } catch (error) {
             console.log(error)
         }
-
-
     }
+    //message scroll effect
+    useEffect(()=> {
+        scroll.current?.scrollIntoView({ behavior: "smooth" });
+      },[messages])
 
     return (
         <div className='ChatBox-container'>
@@ -90,7 +100,7 @@ const ChatBox = ({ chat, currentUser }) => {
                     {/* chat-body */}
                     <div className="chat-body">
                         {messages?.map((message, i) => (
-                            <div key={i} className={message.senderId === currentUser ? "message own":"message"}>
+                            <div ref={scroll} key={i} className={message.senderId === currentUser ? "message own":"message"}>
                                 <span>{message.text}</span>
                                 <span>{format(message.createdAt)}</span>
                             </div>
