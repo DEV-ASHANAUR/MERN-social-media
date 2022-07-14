@@ -4,8 +4,12 @@ import InputEmoji from 'react-input-emoji'
 import { useEffect } from 'react';
 import { getUser } from '../../api/UserRequests';
 import { addMessages, getMessages } from '../../api/MessageRequests'
-import {format} from 'timeago.js';
-const ChatBox = ({ chat, currentUser,setSendMessage,receivedMessage }) => {
+import { uploadImage } from '../../actions/UploadAction';
+import { format } from 'timeago.js';
+import {useDispatch} from 'react-redux'
+
+const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
+    const dispatch = useDispatch();
     const [userData, setUserData] = useState(null);
     const [messages, setMessages] = useState(null);
     const [newMessage, setNewMessage] = useState("");
@@ -28,13 +32,13 @@ const ChatBox = ({ chat, currentUser,setSendMessage,receivedMessage }) => {
         }
         if (chat !== null) getUserData();
     }, [chat, currentUser]);
-    
+
     //receved the message from parent component
-    useEffect(()=>{
-        if(receivedMessage !== null && receivedMessage.chatId === chat._id){
-            setMessages([...messages,receivedMessage]);
+    useEffect(() => {
+        if (receivedMessage !== null && receivedMessage.chatId === chat._id) {
+            setMessages([...messages, receivedMessage]);
         }
-    },[receivedMessage])
+    }, [receivedMessage])
 
     //fetch message for a user
     useEffect(() => {
@@ -51,29 +55,66 @@ const ChatBox = ({ chat, currentUser,setSendMessage,receivedMessage }) => {
     }, [chat])
 
     //handleSend
-    const handleSend = async(e) =>{
+    const handleSend = async (e) => {
         e.preventDefault();
         const message = {
-            senderId : currentUser,
+            senderId: currentUser,
             text: newMessage,
             chatId: chat._id
         }
-        const reciverId = chat.members.find((id)=>id!==currentUser);
+        const reciverId = chat.members.find((id) => id !== currentUser);
         //set message to socket server
-        setSendMessage({...message, reciverId});
+        setSendMessage({ ...message, reciverId });
         //send message to database
         try {
-            const {data} = await addMessages(message);
+            const { data } = await addMessages(message);
             setMessages([...messages, data]);
             setNewMessage("");
         } catch (error) {
             console.log(error)
         }
     }
+
+    //send image
+    const sendImage = async(event) => {
+        const message = {
+            senderId: currentUser,
+            chatId: chat._id
+        }
+
+        if (event.target.files && event.target.files[0]) {
+            let image = event.target.files[0];
+
+            const data = new FormData();
+            const fileName = Date.now() + image.name;
+            data.append("name", fileName);
+            data.append("file", image);
+            message.image = fileName;
+            // console.log(newPost);
+            try {
+                dispatch(uploadImage(data));
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+        const reciverId = chat.members.find((id) => id !== currentUser);
+        //set message to socket server
+        setSendMessage({ ...message, reciverId });
+        //send message to database
+        try {
+            const { data } = await addMessages(message);
+            setMessages([...messages, data]);
+            setNewMessage("");
+        } catch (error) {
+            console.log(error)
+        }
+
+    }
     //message scroll effect
-    useEffect(()=> {
+    useEffect(() => {
         scroll.current?.scrollIntoView({ behavior: "smooth" });
-      },[messages])
+    }, [messages])
 
     return (
         <div className='ChatBox-container'>
@@ -100,11 +141,17 @@ const ChatBox = ({ chat, currentUser,setSendMessage,receivedMessage }) => {
                     {/* chat-body */}
                     <div className="chat-body">
                         {messages?.map((message, i) => (
-                            <div ref={scroll} key={i} className={message.senderId === currentUser ? "message own":"message"}>
-                                <span>{message.text}</span>
+                            <div ref={scroll} key={i} className={message.senderId === currentUser ? "message own" : "message"}>
+                                {message.image ? (
+                                    <img src={message?.image && process.env.REACT_APP_PUBLIC_FOLDER +
+                                        message.image} alt="chatImg" className='chatImage' />
+                                ) : (
+                                    <span>{message.text}</span>
+                                )}
                                 <span>{format(message.createdAt)}</span>
                             </div>
-                      ))}
+
+                        ))}
 
                     </div>
                     {/* send Area */}
@@ -115,7 +162,7 @@ const ChatBox = ({ chat, currentUser,setSendMessage,receivedMessage }) => {
                             onChange={handleChange}
                         />
                         <div className="send-button button" onClick={handleSend}>Send</div>
-                        <input type="file" style={{ display: "none" }} ref={imageRef} />
+                        <input type="file" style={{ display: "none" }} onChange={sendImage} ref={imageRef} />
 
                     </div>
                 </>
