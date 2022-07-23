@@ -10,11 +10,11 @@ const NavIcons = () => {
             <Link to="../home">
                 <img src={Home} alt='home' />
             </Link>
-            <UilSetting />
-            <img src={Noti} alt='notification' />
             <Link to="../chat">
                 <img src={Comment} alt='Comment' />
             </Link>
+            <UilSetting onClick={()=>alert("This page is not ready Now!")} />
+            <img src={Noti} alt='notification' onClick={()=>alert("This page is not ready Now!")} />
         </div>
     )
 }
