@@ -4,8 +4,8 @@ import { Modal, useMantineTheme } from "@mantine/core";
 import { useState } from 'react';
 import {useDispatch,useSelector} from 'react-redux';
 import {useParams} from 'react-router-dom';
-import {uploadImage} from '../../actions/UploadAction';
 import {updateUser} from '../../actions/UserAction';
+import axios from 'axios';
 
 const ProfileModal = ({ modalOpened, setModalOpened,data }) => {
     const theme = useMantineTheme();
@@ -30,18 +30,23 @@ const ProfileModal = ({ modalOpened, setModalOpened,data }) => {
         }
     }
     //handleSubmit
-    const handleSubmit = (e)=>{
+    const handleSubmit = async(e)=>{
         e.preventDefault();
         let UserData = formData;
         //if profile image
         if(profileImage){
             const data = new FormData();
-            const fileName = Date.now() + profileImage.name;
-            data.append("name",fileName);
             data.append("file",profileImage);
-            UserData.profilePicture = fileName;
+            data.append("upload_preset","waeorw8w");
+            // const fileName = Date.now() + profileImage.name;
+            // data.append("name",fileName);
+            // data.append("file",profileImage);
+            // UserData.profilePicture = fileName;
             try {
-                dispatch(uploadImage(data));
+                const res = await axios.post("https://api.cloudinary.com/v1_1/dmgagw7ec/image/upload",data);
+                // dispatch(uploadImage(data));
+                UserData.profilePicture = res.data.url;
+                // console.log("upload profile",res.data.url);
             } catch (error) {
                 console.log(error)
             }
@@ -49,12 +54,17 @@ const ProfileModal = ({ modalOpened, setModalOpened,data }) => {
         //if cover image
         if(coverImage){
             const data = new FormData();
-            const fileName = Date.now() + coverImage.name;
-            data.append("name",fileName);
             data.append("file",coverImage);
-            UserData.coverPicture = fileName;
+            data.append("upload_preset","waeorw8w");
+            // const fileName = Date.now() + coverImage.name;
+            // data.append("name",fileName);
+            // data.append("file",coverImage);
+            // UserData.coverPicture = fileName;
             try {
-                dispatch(uploadImage(data));
+                const res = await axios.post("https://api.cloudinary.com/v1_1/dmgagw7ec/image/upload",data);
+                // dispatch(uploadImage(data));
+                UserData.coverPicture = res.data.url;
+                // console.log("upload cover",res.data.url);
             } catch (error) {
                 console.log(error)
             }

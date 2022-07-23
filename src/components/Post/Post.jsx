@@ -23,7 +23,7 @@ const Post = ({data}) => {
     <div className='Post'>
         {
           (data.image) && (
-            <img src={data.image ? process.env.REACT_APP_PUBLIC_FOLDER + data.image : ""} alt="post_img" />
+            <img src={data.image ? data.image : ""} alt="post_img" />
           )
         }
         <div className="postReact">

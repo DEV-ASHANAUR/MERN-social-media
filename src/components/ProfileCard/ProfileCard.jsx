@@ -35,12 +35,12 @@ const ProfileCard = ({ location }) => {
                     <div className="ProfileImages">
                         <img src={
                             profileUser.coverPicture
-                                ? serverPublic + profileUser.coverPicture
+                                ? profileUser.coverPicture
                                 : serverPublic + "defaultCover.jpg"
                         } alt="cover" />
                         <img src={
                             profileUser.profilePicture
-                                ? serverPublic + profileUser.profilePicture
+                                ? profileUser.profilePicture
                                 : serverPublic + "defaultProfile.png"
                         } alt="cover" />
                     </div>
@@ -49,12 +49,12 @@ const ProfileCard = ({ location }) => {
                         <div className="ProfileImages">
                             <img src={
                                 user.coverPicture
-                                    ? serverPublic + user.coverPicture
+                                    ? user.coverPicture
                                     : serverPublic + "defaultCover.jpg"
                             } alt="cover" />
                             <img src={
                                 user.profilePicture
-                                    ? serverPublic + user.profilePicture
+                                    ? user.profilePicture
                                     : serverPublic + "defaultProfile.png"
                             } alt="cover" />
                         </div>

@@ -8,8 +8,9 @@
 
 .PostShare>img {
     border-radius: 50%;
-    width: 3rem;
     height: 3rem;
+    width: 3rem;
+    object-fit: cover;
 }
 
 .PostShare>div {

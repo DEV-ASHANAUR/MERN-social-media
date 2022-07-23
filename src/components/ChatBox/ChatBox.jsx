@@ -4,9 +4,9 @@ import InputEmoji from 'react-input-emoji'
 import { useEffect } from 'react';
 import { getUser } from '../../api/UserRequests';
 import { addMessages, getMessages } from '../../api/MessageRequests'
-import { uploadImage } from '../../actions/UploadAction';
 import { format } from 'timeago.js';
 import {useDispatch} from 'react-redux'
+import axios from 'axios';
 
 const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
     const dispatch = useDispatch();
@@ -86,13 +86,18 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
             let image = event.target.files[0];
 
             const data = new FormData();
-            const fileName = Date.now() + image.name;
-            data.append("name", fileName);
-            data.append("file", image);
-            message.image = fileName;
+            data.append("file",image);
+            data.append("upload_preset","waeorw8w");
+            // const fileName = Date.now() + image.name;
+            // data.append("name", fileName);
+            // data.append("file", image);
+            // message.image = fileName;
             // console.log(newPost);
             try {
-                dispatch(uploadImage(data));
+                const res = await axios.post("https://api.cloudinary.com/v1_1/dmgagw7ec/image/upload",data);
+                // dispatch(uploadImage(data));
+                message.image = res.data.url;
+                // console.log("upload file",res.data.url);
             } catch (error) {
                 console.log(error)
             }
@@ -126,8 +131,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
                             <div>
                                 <img src={
                                     userData?.profilePicture
-                                        ? process.env.REACT_APP_PUBLIC_FOLDER +
-                                        userData.profilePicture
+                                        ? userData.profilePicture
                                         : process.env.REACT_APP_PUBLIC_FOLDER +
                                         "defaultProfile.png"
                                 } alt="profile" className='followerImage' style={{ width: "50px", height: "50px" }} />
@@ -143,7 +147,7 @@ const ChatBox = ({ chat, currentUser, setSendMessage, receivedMessage }) => {
                         {messages?.map((message, i) => (
                             <div ref={scroll} key={i} className={message.senderId === currentUser ? "message own" : "message"}>
                                 {message.image ? (
-                                    <img src={message?.image && process.env.REACT_APP_PUBLIC_FOLDER +
+                                    <img src={message?.image && 
                                         message.image} alt="chatImg" className='chatImage' />
                                 ) : (
                                     <span>{message.text}</span>

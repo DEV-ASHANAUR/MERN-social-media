@@ -1,5 +1,4 @@
 import React, { useState, useRef } from 'react'
-import ProfileImage from "../../img/profileImg.jpg";
 import './PostShare.css';
 import { UilScenery } from "@iconscout/react-unicons";
 import { UilPlayCircle } from "@iconscout/react-unicons";
@@ -7,9 +6,10 @@ import { UilLocationPoint } from "@iconscout/react-unicons";
 import { UilSchedule } from "@iconscout/react-unicons";
 import { UilTimes } from "@iconscout/react-unicons";
 import { useDispatch, useSelector } from 'react-redux';
-import { uploadImage, uploadPost } from '../../actions/UploadAction';
+import { uploadPost } from '../../actions/UploadAction';
 import {getTimelinePosts} from '../../actions/PostsAction'
 import { ToastContainer, toast } from 'react-toastify';
+import axios from 'axios';
 
 const PostShare = () => {
   const serverPublic = process.env.REACT_APP_PUBLIC_FOLDER;
@@ -27,7 +27,7 @@ const PostShare = () => {
     }
   }
   //handleUpload
-  const handleUpload = (e) => {
+  const handleUpload = async(e) => {
     e.preventDefault();
     if (desc.current.value == '') {
       toast.error("Please Write Something!", { position: "bottom-right" });
@@ -41,13 +41,18 @@ const PostShare = () => {
     //if any image are selected
     if (image) {
       const data = new FormData();
-      const fileName = Date.now() + image.name;
-      data.append("name", fileName);
-      data.append("file", image);
-      newPost.image = fileName;
+      data.append("file",image);
+      data.append("upload_preset","waeorw8w");
+      // const fileName = Date.now() + image.name;
+      // data.append("name", fileName);
+      // data.append("file", image);
+      // newPost.image = fileName;
       // console.log(newPost);
       try {
-        dispatch(uploadImage(data));
+        const res = await axios.post("https://api.cloudinary.com/v1_1/dmgagw7ec/image/upload",data);
+        // dispatch(uploadImage(data));
+        newPost.image = res.data.url;
+        // console.log("upload file",res.data.url);
       } catch (error) {
         console.log(error)
       }
@@ -66,7 +71,7 @@ const PostShare = () => {
       <div className='PostShare'>
         <img src={
           user.profilePicture
-            ? serverPublic + user.profilePicture
+            ? user.profilePicture
             : serverPublic + "defaultProfile.png"
         } alt="profile" />
         <div>

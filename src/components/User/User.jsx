@@ -18,7 +18,7 @@ const User = ({ person }) => {
             <div>
                 <Link to={`/profile/${person._id}`}>
                     <img src={person.profilePicture
-                        ? serverPublic + person.profilePicture
+                        ? person.profilePicture
                         : serverPublic + "defaultProfile.png"} alt="" className='followerImage' />
                 </Link>
                 <Link to={`/profile/${person._id}`} style={{ textDecoration: "none", color: "inherit" }}>
